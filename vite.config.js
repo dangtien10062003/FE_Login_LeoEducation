@@ -11,17 +11,20 @@ const requiredEnv = (env, key) => {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+  const isDevelopment = mode === 'development';
 
   return {
     plugins: [react()],
-    server: {
-      port: Number(requiredEnv(env, 'VITE_DEV_SERVER_PORT')),
-      proxy: {
-        '/api': {
-          target: requiredEnv(env, 'VITE_API_PROXY_TARGET'),
-          changeOrigin: true,
+    ...(isDevelopment && {
+      server: {
+        port: Number(requiredEnv(env, 'VITE_DEV_SERVER_PORT')),
+        proxy: {
+          '/api': {
+            target: requiredEnv(env, 'VITE_API_PROXY_TARGET'),
+            changeOrigin: true,
+          },
         },
       },
-    },
+    }),
   };
 });
