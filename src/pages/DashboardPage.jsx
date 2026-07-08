@@ -3,6 +3,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, User, Shield, Clock, CheckCircle } from 'lucide-react';
 
+const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || '/';
+
 export const DashboardPage = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ export const DashboardPage = () => {
             clearInterval(timer);
             const token = localStorage.getItem('token');
             // Redirect to FE_Admin with token
-            window.location.href = `http://localhost:3000?token=${token}`;
+            window.location.href = `${ADMIN_URL}?token=${encodeURIComponent(token || '')}`;
             return 0;
           }
           return prev - 1;
@@ -29,7 +31,7 @@ export const DashboardPage = () => {
 
   const handleGoToAdmin = () => {
     const token = localStorage.getItem('token');
-    window.location.href = `http://localhost:3000?token=${token}`;
+    window.location.href = `${ADMIN_URL}?token=${encodeURIComponent(token || '')}`;
   };
 
   const handleLogout = () => {

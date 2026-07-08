@@ -1,15 +1,27 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
-  plugins: [react()],
-  server: {
-    port: 3001,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
+const requiredEnv = (env, key) => {
+  const value = env[key];
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${key}`);
+  }
+  return value;
+};
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+
+  return {
+    plugins: [react()],
+    server: {
+      port: Number(requiredEnv(env, 'VITE_DEV_SERVER_PORT')),
+      proxy: {
+        '/api': {
+          target: requiredEnv(env, 'VITE_API_PROXY_TARGET'),
+          changeOrigin: true,
+        },
       },
     },
-  },
+  };
 });

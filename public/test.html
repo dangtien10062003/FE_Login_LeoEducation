@@ -34,9 +34,9 @@ async function test() {
     const j2 = await r2.json();
     log('   Result: ' + JSON.stringify(j2, null, 2).substring(0, 200));
     
-    log('\n3. Testing proxy through FE_Login port 3001...');
-    log('   Open http://localhost:3001 to test FE_Login UI');
-    log('   Open http://localhost:3000 to test FE_Admin UI');
+    log('\n3. Testing proxy through the configured FE_Login dev server...');
+    log('   Open the FE_Login URL from VITE_DEV_SERVER_PORT');
+    log('   Open the FE_Admin URL from VITE_ADMIN_URL');
     
   } catch(e) {
     log('ERROR: ' + e.message);
