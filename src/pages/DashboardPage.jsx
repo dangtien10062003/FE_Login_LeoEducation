@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, User, Shield, Clock, CheckCircle } from 'lucide-react';
 
-const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || '/';
+const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || '';
 
 export const DashboardPage = () => {
   const { user, logout } = useAuth();
@@ -12,7 +12,7 @@ export const DashboardPage = () => {
 
   // Auto-redirect to FE_Admin after login
   useEffect(() => {
-    if (user) {
+    if (user && ADMIN_URL) {
       const timer = setInterval(() => {
         setCountdown(prev => {
           if (prev <= 1) {
@@ -30,6 +30,10 @@ export const DashboardPage = () => {
   }, [user]);
 
   const handleGoToAdmin = () => {
+    if (!ADMIN_URL) {
+      alert('Missing VITE_ADMIN_URL. Please configure the FE_Admin URL in Vercel.');
+      return;
+    }
     const token = localStorage.getItem('token');
     window.location.href = `${ADMIN_URL}?token=${encodeURIComponent(token || '')}`;
   };
