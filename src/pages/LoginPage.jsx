@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
   AlertCircle,
@@ -13,6 +13,17 @@ import {
   Sparkles,
 } from 'lucide-react';
 
+const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || 'http://localhost:3000';
+
+const buildAdminUrl = (token) => {
+  const url = new URL(ADMIN_URL, window.location.origin);
+  if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+    url.hostname = window.location.hostname;
+  }
+  url.searchParams.set('token', token || '');
+  return url.toString();
+};
+
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +31,6 @@ export const LoginPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +39,8 @@ export const LoginPage = () => {
 
     try {
       await login(email.trim(), password);
-      navigate('/dashboard');
+      const token = localStorage.getItem('token');
+      window.location.replace(buildAdminUrl(token));
     } catch (err) {
       setError(err.message || 'Đăng nhập thất bại');
     } finally {

@@ -15,6 +15,23 @@ export const AuthProvider = ({ children }) => {
 
   // Check existing token on mount
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const isLogoutRedirect = params.get('logout') === '1';
+
+    if (isLogoutRedirect) {
+      localStorage.removeItem('token');
+      setUser(null);
+      params.delete('logout');
+      const cleanQuery = params.toString();
+      window.history.replaceState(
+        {},
+        '',
+        `${window.location.pathname}${cleanQuery ? `?${cleanQuery}` : ''}`,
+      );
+      setLoading(false);
+      return;
+    }
+
     const token = localStorage.getItem('token');
     if (token) {
       getMe()

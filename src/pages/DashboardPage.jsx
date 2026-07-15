@@ -5,6 +5,15 @@ import { LogOut, User, Shield, Clock, CheckCircle } from 'lucide-react';
 
 const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || '';
 
+const buildAdminUrl = (token) => {
+  const url = new URL(ADMIN_URL || '/', window.location.origin);
+  if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+    url.hostname = window.location.hostname;
+  }
+  url.searchParams.set('token', token || '');
+  return url.toString();
+};
+
 export const DashboardPage = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -19,7 +28,7 @@ export const DashboardPage = () => {
             clearInterval(timer);
             const token = localStorage.getItem('token');
             // Redirect to FE_Admin with token
-            window.location.href = `${ADMIN_URL}?token=${encodeURIComponent(token || '')}`;
+            window.location.href = buildAdminUrl(token);
             return 0;
           }
           return prev - 1;
@@ -35,7 +44,7 @@ export const DashboardPage = () => {
       return;
     }
     const token = localStorage.getItem('token');
-    window.location.href = `${ADMIN_URL}?token=${encodeURIComponent(token || '')}`;
+    window.location.href = buildAdminUrl(token);
   };
 
   const handleLogout = () => {
